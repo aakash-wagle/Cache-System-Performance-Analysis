@@ -1,43 +1,44 @@
 # Cache System Performance Analysis
 
-This project analyzes the performance of cache systems under various configurations and workloads, focusing on operations such as **scatter**, **gather**, and **convolution**. The analysis aims to understand how different cache parameters affect system performance metrics like **Average Memory Access Time (AMAT)**, **hit rates**, **miss rates**, and **total execution cycles**.
+This project analyzes **cache performance** for various **memory-intensive kernels** (scatter, gather, and convolution) using **Intel PIN tool** for trace generation and a **Python-based cache simulator** for performance evaluation. The objective is to study the impact of **cache hierarchy depth, associativity, and block size** on system performance.
 
 ## Features
 
-- **Implementation of Memory-Intensive Operations**:
+- **Implements three key memory-intensive operations**:
   - **Scatter Operation**: Distributes data across a 2D matrix using generated indices.
   - **Gather Operation**: Collects data from specified indices within a 2D matrix.
   - **Convolution Operation**: Applies a kernel over a matrix with different configurations.
-
 - **Cache Simulation**:
   - Evaluates cache behavior under different architectures.
   - Simulates **L1, L2, and L3 cache** levels.
-  - Configurable **block sizes**, **associativity**, and **cache depth**.
-
+  - Configurable **block sizes, associativity, and cache depth**.
 - **Performance Analysis**:
-  - Computes **AMAT**, **hit/miss rates**, and **execution cycles**.
+  - Computes **AMAT (Average Memory Access Time)**, **hit/miss rates**, and **execution cycles**.
   - Visualizes trends using **graphs and reports**.
 
 ## Project Structure
 
 ```
 Cache-System-Performance-Analysis/
-│── Assignment1_Aakash/            # Contains source code and scripts
-│   ├── scatter.cpp                # Scatter operation implementation
-│   ├── gather.cpp                 # Gather operation implementation
-│   ├── convolution.cpp            # Convolution operation implementation
-│   ├── cache_simulator.py         # Python script for cache simulation
-│   └── analyze_results.py         # Script to analyze simulation results
-│── SH_Commands/                   # Shell scripts for automation
-│   ├── run_simulations.sh         # Executes simulations with various configurations
-│   └── process_data.sh            # Processes simulation output data
-│── .gitignore                     # Specifies files to ignore in version control
-│── Convolution.txt                # Detailed analysis of convolution operation
-│── Data.xlsx                      # Collected data from simulations
-│── Data_v2.xlsx                   # Updated dataset with additional simulations
-│── Gather.txt                     # Detailed analysis of gather operation
-│── Report.docx                    # Comprehensive report of the analysis
-│── Scatter.xlsx                   # Data specific to scatter operation
+│── Kernel_Files/                  # C++ kernel implementations
+│   ├── convolution.cpp             # Convolution operation
+│   ├── gather.cpp                  # Gather operation
+│   ├── scatter.cpp                 # Scatter operation
+│── Records/                        # Simulation results, logs, and graphs
+│   ├── Convolution.txt             # Raw results for convolution operation
+│   ├── Gather.txt                  # Raw results for gather operation
+│   ├── Scatter.txt                 # Raw results for scatter operation
+│   ├── Data with Graphs.xlsx       # Graphs and processed data
+│   ├── Report.pdf                  # Final report detailing analysis
+│── SH_Commands/                    # Shell scripts for automation
+│── .gitignore                      # Files to exclude from version control
+│── Convolution.txt                 # Summary of convolution results
+│── Data.xlsx                        # Collected data from simulations
+│── Data_v2.xlsx                     # Updated dataset with additional simulations
+│── Gather.txt                       # Summary of gather results
+│── README.md                        # Project documentation
+│── Report.docx                      # Detailed report (editable version)
+│── Scatter.xlsx                      # Data specific to scatter operation
 ```
 
 ## Installation & Setup
@@ -51,72 +52,78 @@ Cache-System-Performance-Analysis/
 
 2. **Set up the environment**:
 
-   - Ensure you have a C++ compiler (e.g., `g++`) and Python installed.
-   - Install necessary Python packages:
+   - Ensure you have a **C++ compiler (g++)** and **Python** installed.
+   - Install necessary Python dependencies:
 
      ```bash
      pip install -r requirements.txt
      ```
 
-## Usage
+## Running the Experiments
 
-1. **Compile the C++ source code**:
+### 1️⃣ Compile the C++ Kernel Code
 
-   Navigate to the `Assignment1_Aakash` directory and compile the source files:
+Navigate to the `Kernel_Files` directory and compile the source files:
 
-   ```bash
-   cd Assignment1_Aakash
-   g++ -o scatter scatter.cpp
-   g++ -o gather gather.cpp
-   g++ -o convolution convolution.cpp
-   ```
+```bash
+cd Kernel_Files
+g++ -o scatter scatter.cpp
+g++ -o gather gather.cpp
+g++ -o convolution convolution.cpp
+```
 
-2. **Run simulations**:
+### 2️⃣ Run Simulations
 
-   Use the provided shell script to execute simulations with various cache configurations:
+Execute the **scatter, gather, and convolution** simulations:
 
-   ```bash
-   cd ../SH_Commands
-   ./run_simulations.sh
-   ```
+```bash
+./scatter
+./gather
+./convolution
+```
 
-   This script will run the compiled binaries and simulate cache behavior based on predefined configurations.
+Alternatively, you can use the provided **shell script** in `SH_Commands` to **automate the process**:
 
-3. **Analyze results**:
+```bash
+cd SH_Commands
+./run_simulations.sh
+```
 
-   After simulations, process the data to extract insights:
+### 3️⃣ Analyze Results
 
-   ```bash
-   ./process_data.sh
-   ```
+Once the simulations are completed, process the data:
 
-   Then, use the Python analysis script to generate visualizations:
+```bash
+./process_data.sh
+```
 
-   ```bash
-   cd ../Assignment1_Aakash
-   python analyze_results.py
-   ```
+Then, use the **Python analysis script** to generate **visualizations**:
+
+```bash
+cd Kernel_Files
+python analyze_results.py
+```
 
 ## Observations & Insights
 
-The analysis revealed the following:
+Key findings from the cache performance analysis:
 
 - **Scatter Operation**:
-  - Increasing the number of cache blocks and associativity generally decreases AMAT and total cycles.
-  - Larger matrices (e.g., 150x150) exhibit slightly higher AMAT and miss rates due to increased data volume.
+  - Increasing cache blocks and associativity **reduces AMAT** and **improves hit rates**.
+  - Larger matrices (e.g., **150x150**) exhibit **higher AMAT and miss rates** due to increased data volume.
 
 - **Gather Operation**:
-  - Anomalies observed where higher associativity leads to increased AMAT and miss rates.
-  - Larger matrices amplify this effect, suggesting inefficiencies in cache usage for gather operations.
+  - Shows **anomalous behavior** where **higher associativity leads to increased AMAT**.
+  - Larger matrices amplify this effect, suggesting inefficiencies in cache utilization.
 
 - **Convolution Operation**:
-  - More predictable behavior with improvements in cache parameters leading to better performance metrics.
-  - Structured memory access patterns contribute to smoother improvements in hit rates.
+  - **More predictable behavior** with **better cache optimizations** improving performance.
+  - **Structured memory access** contributes to **higher hit rates**.
 
 ## Documentation
 
-For a detailed analysis, refer to the [Project Report](./Report.docx), which includes:
+For a **detailed analysis**, refer to the **[Project Report](./Report.pdf)**, which contains:
 
-- Cache block diagrams.
-- Graphs for hit/miss rates, AMAT trends, and execution times.
-- Observations on how cache parameters affect different operations.
+- **Cache block diagrams**.
+- **Graphs for hit/miss rates, AMAT trends, and execution times**.
+- **Observations on cache parameter effects**.
