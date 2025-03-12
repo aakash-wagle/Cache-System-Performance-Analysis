@@ -1,0 +1,20 @@
+export PIN_ROOT=/home/other/CSE530-FA2022/pin-3.18-98332-gaebd7b1e6-gcc-linux
+echo $PIN_ROOT
+cd~/CachePerformanceOnMatMul
+
+rm –r bin
+mkdir bin
+rm –r traces [it might fail if ‘traces’ folder is not there, and that’s okay]
+mkdir traces
+
+g++ -Wall src/matmul_ijkalgo.cpp-o bin/matmul_ijkalgo.o [change this to your kernel file and make appropriate changes below]
+
+source /home/other/CSE530-FA2022/condarc
+
+python utils/random_matrix_generator.py --n 128 --dump input_matrix.in --sparsity 50
+
+$PIN_ROOT/pin-t $PIN_ROOT/source/tools/ManualExamples/obj-intel64/pinatrace.so -- bin/matmul_ijkalgo.o -- input_file input_matrix.in
+
+mv pinatrace.out traces/ijk_traces.out
+
+source run_simulator.sh ~/CachePerformanceOnMatMul/traces [give absolute path to traces directory]
